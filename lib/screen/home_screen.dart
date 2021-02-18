@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView(
       children: <Widget>[
         Stack(
+          //위젯 서로 겹치게 위에 배치가능
           children: <Widget>[
             CarouselImage(movies: movies),
             TopBar(),
