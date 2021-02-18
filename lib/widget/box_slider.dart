@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/model_movie.dart';
+import 'package:flutter_app/screen/detail_screen.dart';
 
 class BoxSlider extends StatelessWidget {
   final List<Movie> movies;
@@ -15,7 +16,8 @@ class BoxSlider extends StatelessWidget {
             height: 120,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: makeBoxImages(movies),
+              children: makeBoxImages(context, movies),
+              //가장 상위 클래스의 context를 가져와서 onPressed함수에서도 접근가능
             ),
           ),
         ],
@@ -24,12 +26,21 @@ class BoxSlider extends StatelessWidget {
   }
 }
 
-List<Widget> makeBoxImages(List<Movie> movies) {
+List<Widget> makeBoxImages(BuildContext context, List<Movie> movies) {
   List<Widget> results = [];
   for (var i = 0; i < movies.length; i++) {
     results.add(
       InkWell(
-        onTap: () {},
+        //inkwell (ripple 애니메이션 효과)
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute<Null>(
+              fullscreenDialog: true,
+              builder: (BuildContext context) {
+                return DetailScreen(
+                  movie: movies[i],
+                );
+              }));
+        },
         child: Container(
           padding: EdgeInsets.only(right: 10),
           child: Align(
