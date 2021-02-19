@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screen/home_screen.dart';
+import 'package:flutter_app/screen/profile.dart';
 import 'package:flutter_app/widget/bottom_bar.dart';
 
 void main() => runApp(MyApp());
@@ -24,9 +25,9 @@ class _MyAppState extends State<MyApp> {
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
               HomeScreen(),
-              Container(),
-              Container(),
-              Container(),
+              Container(child: Center(child: Text('검색'))),
+              Container(child: Center(child: Text('저장'))),
+              Profile(),
             ],
           ),
           bottomNavigationBar: Bottom(),
