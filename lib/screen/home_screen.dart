@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/model_movie.dart';
 import 'package:flutter_app/widget/box_slider.dart';
@@ -9,37 +10,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Movie> movies = [
-    Movie.fromMap({
-      'title': '브리저튼',
-      'keyword': '로맨스/시대물',
-      'poster': 'bridgerton.jpg',
-      'like': false
-    }),
-    Movie.fromMap({
-      'title': '오펀 블랙',
-      'keyword': 'SF/드라마/액션',
-      'poster': 'orphanblack.jpg',
-      'like': false
-    }),
-    Movie.fromMap({
-      'title': '러브 앤 아나키',
-      'keyword': '로맨스/코미디',
-      'poster': 'loveandanarchy.jpeg',
-      'like': false
-    }),
-    Movie.fromMap({
-      'title': '기묘한 이야기',
-      'keyword': 'SF/미스터리',
-      'poster': 'strangethings.png',
-      'like': false
-    }),
-  ];
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Stream<QuerySnapshot> streamData;
+
   void initState() {
     super.initState();
+    streamData = firestore.collection('movie').snapshots();
+  }
+  // List<Movie> movies = [
+  //   Movie.fromMap({
+  //     'title': '브리저튼',
+  //     'keyword': '로맨스/시대물',
+  //     'poster': 'bridgerton.jpg',
+  //     'like': false
+  //   }),
+  // void initState() {
+  //   super.initState();
+  // }
+
+  Widget _fetchData(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('movie').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return LinearProgressIndicator();
+        return _buildBody(context, snapshot.data.docs);
+      },
+    );
   }
 
-  Widget build(BuildContext context) {
+  Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
+    List<Movie> movies = snapshot.map((d) => Movie.fromSnapShot(d)).toList();
     return ListView(
       children: <Widget>[
         Stack(
@@ -57,6 +57,10 @@ class _HomeScreenState extends State<HomeScreen> {
         )
       ],
     );
+  }
+
+  Widget build(BuildContext context) {
+    return _fetchData(context);
   }
 }
 
